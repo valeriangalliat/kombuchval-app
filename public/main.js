@@ -53,7 +53,13 @@ async function onSubmit () {
   const bottlesIndex = lines.findIndex(line => line.startsWith('## ') && line.endsWith(' Bottles'))
   const bottles = lines.slice(bottlesIndex).filter(line => line.startsWith('* '))
 
-  const html = `Bottle <strong>#${number}</strong> is part of a batch of ${bottles.length} bottles with label <strong>${props.Label}</strong>, started on <strong>${props.Brewing}</strong> and bottled on <strong>${props.Bottling}</strong>.`
+  const batchViewUrl = new URL(batchLink, `https://github.com/valeriangalliat/kombuchval/blob/master/bottles/0.md`)
+
+  const html = `Bottle <strong>#${number}</strong> is part of a
+<a href="${batchViewUrl}">batch</a> of ${bottles.length} bottles with label
+<strong>${props.Label}</strong>, started on <strong>${props.Brewing}</strong>
+and bottled on <strong>${props.Bottling}</strong>.<br>
+Check out the <a href="https://github.com/valeriangalliat/kombuchval#readme">other recipes</a>!`
 
   showResult(html)
 }
