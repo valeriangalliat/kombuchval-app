@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "build": "cp node_modules/@primer/css/dist/primer.css public"
+  },
+  "dependencies": {
+    "@primer/css": "^17.5.2"
+  }
+}
