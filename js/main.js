@@ -1,30 +1,18 @@
-const form = document.getElementById('form')
-const result = document.getElementById('result')
+/* eslint-env browser */
 
-function showResult (message) {
-  result.innerHTML = message
-  result.classList.remove('d-none')
-}
+import Alpine from 'alpinejs'
+import 'emojicon-big/auto'
 
-async function onSubmit () {
-  const number = form.elements.number.value
-
-  if (`${Number(number)}` !== number) {
-    return showError(`Not a number.`)
-  }
-
+async function fetchBottle (number) {
   const bottleUrl = `https://raw.githubusercontent.com/valeriangalliat/kombuchval/master/bottles/${number}.md`
   const bottleRes = await fetch(bottleUrl)
 
   if (bottleRes.status === 404) {
-    result.classList.remove('d-none')
-    result.textContent = 'This bottle does not exist!'
-    return
+    return 'This bottle does not exist!'
   }
 
   if (!bottleRes.ok) {
-    result.classList.remove('d-none')
-    result.textContent = 'Error fetching batch'
+    throw new Error('Error fetching batch')
   }
 
   const batchLink = await bottleRes.text()
@@ -37,8 +25,6 @@ async function onSubmit () {
 
   const batch = await batchRes.text()
   const lines = batch.split('\n')
-
-  const [ date, title ] = lines[0].slice(2).split(' - ')
   const props = {}
 
   const rawProps = lines.slice(1, lines.findIndex(line => line.startsWith('## ')))
@@ -53,23 +39,37 @@ async function onSubmit () {
   const bottlesIndex = lines.findIndex(line => line.startsWith('## ') && line.endsWith(' Bottles'))
   const bottles = lines.slice(bottlesIndex).filter(line => line.startsWith('* '))
 
-  const batchViewUrl = new URL(batchLink, `https://github.com/valeriangalliat/kombuchval/blob/master/bottles/0.md`)
+  const batchViewUrl = new URL(batchLink, 'https://github.com/valeriangalliat/kombuchval/blob/master/bottles/0.md')
 
   const html = `Bottle <strong>#${number}</strong> is part of a
 <a href="${batchViewUrl}">batch</a> of ${bottles.length} bottles with label
 <strong>${props.Label}</strong>, started on <strong>${props.Brewing}</strong>
 and bottled on <strong>${props.Bottling}</strong>.<br>
-Check out the <a href="https://github.com/valeriangalliat/kombuchval#readme">other recipes</a>!`
+Check out the <a class="text-blue-600 hover:text-blue-800" href="https://github.com/valeriangalliat/kombuchval#readme">other recipes</a>!`
 
-  showResult(html)
+  return html
 }
 
-form.addEventListener('submit', e => {
-  e.preventDefault()
+function submit () {
+  if (`${Number(this.number)}` !== this.number) {
+    this.result = 'Not a number.'
+    return
+  }
 
-  onSubmit()
+  fetchBottle(this.number)
+    .then(html => {
+      this.result = html
+    })
     .catch(err => {
       console.error(err)
-      showResult(`An error occurred. If you're Val, check out the console!`)
+      this.result = 'An error occurred. If you\'re Val, check out the console!'
     })
-})
+}
+
+Alpine.data('bottle', () => ({
+  number: null,
+  result: null,
+  submit
+}))
+
+Alpine.start()

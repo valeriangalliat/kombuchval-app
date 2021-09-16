@@ -4,18 +4,19 @@
   <meta charset="utf-8">
   <title>Kombuch'Val</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="/primer.css">
+  <link rel="icon" href="data:," data-emoji="🍹">
+  <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
-  <form id="form" class="container-lg clearfix p-6 text-center">
-    <h1>Hello 👋</h1>
-    <p>
-      <label for="number">Your bottle number</label>
-      <input id="number" class="form-control" type="number" name="number" min="0" size="6" required>
-      <button class="btn" type="submit">Submit</button>
+  <form class="p-6 text-center" x-data="bottle" @submit.prevent="submit()">
+    <h1 class="text-4xl font-bold mb-6">Hello 👋</h1>
+    <p class="my-4">
+      <label class="font-bold" for="number">Your bottle number</label>
+      <input class="rounded-md border border-gray-200 p-1 px-2" id="number" type="number" min="0" size="4" required x-model="number">
+      <button class="rounded-md border border-gray-200 bg-gray-50 hover:bg-gray-100 transition text-gray-800 p-1 px-3" type="submit">Submit</button>
     </p>
-    <p id="result" class="d-none"></p>
+    <p x-show="result" x-html="result"></p>
   </form>
-  <script src="/main.js"></script>
+  <script src="/js/main.js"></script>
 </body>
 </html>

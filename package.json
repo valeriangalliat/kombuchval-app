@@ -1,8 +1,23 @@
 {
   "scripts": {
-    "build": "cp node_modules/@primer/css/dist/primer.css public"
+    "build:css": "tailwindcss -i css/main.css -o public/css/main.css",
+    "build:js": "esbuild js/main.js --bundle --outfile=public/js/main.js",
+    "build": "concurrently 'npm run build:css' 'npm run build:js'",
+    "watch:css": "npm run build:css -- --watch",
+    "watch:js": "npm run build:js -- --watch",
+    "watch": "concurrently --kill-others 'npm run watch:css' 'npm run watch:js'",
+    "lint": "standard --fix"
   },
   "dependencies": {
-    "@primer/css": "^17.5.2"
+    "@primer/css": "^17.5.2",
+    "@tailwindcss/typography": "^0.4.1",
+    "alpinejs": "^3.3.4",
+    "emojicon-big": "^1.1.0",
+    "esbuild": "^0.12.28",
+    "tailwindcss": "^2.2.15"
+  },
+  "devDependencies": {
+    "concurrently": "^6.2.1",
+    "standard": "^16.0.3"
   }
 }
